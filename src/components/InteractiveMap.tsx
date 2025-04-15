@@ -1,4 +1,3 @@
-
 import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -10,7 +9,7 @@ const ecologicalRegions = [
   {
     id: 'sahel',
     name: 'The Sahel',
-    coordinates: [0, 15],
+    coordinates: [0, 15] as [number, number],
     description: 'A critical transition zone between the Sahara Desert and the savanna, facing desertification and climate challenges.',
     initiatives: [
       'Reforestation and soil restoration',
@@ -21,7 +20,7 @@ const ecologicalRegions = [
   {
     id: 'congo',
     name: 'Congo Basin',
-    coordinates: [20, -2],
+    coordinates: [20, -2] as [number, number],
     description: 'The world\'s second-largest rainforest, a biodiversity hotspot and crucial carbon sink.',
     initiatives: [
       'Forest conservation',
@@ -32,7 +31,7 @@ const ecologicalRegions = [
   {
     id: 'rift',
     name: 'Great Rift Valley',
-    coordinates: [36, -2], 
+    coordinates: [36, -2] as [number, number],
     description: 'A geological wonder hosting diverse ecosystems from mountains to lakes, supporting unique biodiversity.',
     initiatives: [
       'Wildlife corridor protection',
@@ -66,10 +65,10 @@ const InteractiveMap = () => {
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-v9', // Use satellite imagery
+      style: 'mapbox://styles/mapbox/satellite-v9',
       projection: 'globe',
       zoom: 2.5,
-      center: [20, 5], // Centered on Africa
+      center: [20, 5] as [number, number],
       pitch: 30,
       bearing: 0,
       attributionControl: false
@@ -96,11 +95,11 @@ const InteractiveMap = () => {
           geometry: {
             type: 'LineString',
             coordinates: [
-              [-15, 15], // West Africa
-              [0, 15],   // Sahel
-              [20, -2],  // Congo Basin
-              [36, -2],  // Great Rift Valley
-              [40, 0]    // East Africa
+              [-15, 15] as [number, number],
+              [0, 15] as [number, number],
+              [20, -2] as [number, number],
+              [36, -2] as [number, number],
+              [40, 0] as [number, number]
             ]
           }
         }
@@ -149,7 +148,7 @@ const InteractiveMap = () => {
           setSelectedRegion(region);
           
           mapInstance.flyTo({
-            center: region.coordinates,
+            center: region.coordinates as [number, number],
             zoom: 5,
             pitch: 60,
             bearing: 30,
@@ -159,7 +158,7 @@ const InteractiveMap = () => {
         });
         
         new mapboxgl.Marker(el)
-          .setLngLat(region.coordinates)
+          .setLngLat(region.coordinates as [number, number])
           .addTo(mapInstance);
       });
       
@@ -224,7 +223,7 @@ const InteractiveMap = () => {
                   onClick={() => {
                     if (map.current) {
                       map.current.flyTo({
-                        center: [20, 5],
+                        center: [20, 5] as [number, number],
                         zoom: 2.5,
                         pitch: 30,
                         bearing: 0,
