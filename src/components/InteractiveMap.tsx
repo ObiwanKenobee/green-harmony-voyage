@@ -3,10 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { motion } from 'framer-motion';
-
-// This is a placeholder for the actual Mapbox token
-// In production, you should use environment variables
-const MAPBOX_TOKEN = 'YOUR_MAPBOX_TOKEN';
+import MapboxAPITokenInput from './MapboxAPITokenInput';
 
 // Ecological regions data
 const ecologicalRegions = [
@@ -50,14 +47,22 @@ const InteractiveMap = () => {
   const map = useRef<mapboxgl.Map | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<typeof ecologicalRegions[0] | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapboxToken, setMapboxToken] = useState<string | null>(
+    localStorage.getItem('mapbox_token')
+  );
+
+  const handleTokenSubmit = (token: string) => {
+    localStorage.setItem('mapbox_token', token);
+    setMapboxToken(token);
+  };
 
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || !mapboxToken) return;
     
     // Initialize map only once
     if (map.current) return;
 
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+    mapboxgl.accessToken = mapboxToken;
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -169,10 +174,12 @@ const InteractiveMap = () => {
         map.current = null;
       }
     };
-  }, []);
+  }, [mapboxToken]);
   
   return (
     <section id="interactive-map" className="min-h-screen relative">
+      {!mapboxToken && <MapboxAPITokenInput onTokenSubmit={handleTokenSubmit} />}
+      
       <div className="absolute top-0 left-0 w-full z-10 bg-gradient-to-b from-background h-20"></div>
       
       <div className="container-section relative z-20 pt-24">
@@ -265,7 +272,7 @@ const InteractiveMap = () => {
           >
             <div ref={mapContainer} className="w-full h-full" />
             
-            {!mapLoaded && (
+            {(!mapLoaded && mapboxToken) && (
               <div className="absolute inset-0 bg-background flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
               </div>
